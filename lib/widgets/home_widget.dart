@@ -1,112 +1,129 @@
-import 'package:calculator/constants/colors.dart';
-import 'package:calculator/screens/history_screen.dart';
-import 'package:calculator/screens/advanced_calc_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:calculator/constants/colors.dart';
 
 class HomeWidget extends StatelessWidget {
-  const HomeWidget({super.key});
+  final String input;
+  final String result;
+  final bool calculated;
+  final void Function(String) onButtonPressed;
+  final VoidCallback onAdvancedPressed;
+  final VoidCallback onHistoryPressed;
+
+  const HomeWidget({
+    super.key,
+    required this.input,
+    required this.result,
+    required this.calculated,
+    required this.onButtonPressed,
+    required this.onAdvancedPressed,
+    required this.onHistoryPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Top bar with title and history icon
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Calculator',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.history, color: Colors.white),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HistoryScreen(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+    return Scaffold(
+      backgroundColor: Colors.black, 
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        title: const Text(
+          'Calculator',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history, color: Colors.white),
+            onPressed: onHistoryPressed,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          const Spacer(),
 
-        const Spacer(),
-
-        // Display
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              '0',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 48,
-                fontWeight: FontWeight.w300,
+          // Display Input
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                reverse: true,
+                child: Text(
+                  input.isEmpty ? '0' : input,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 40,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-        const Divider(color: Colors.white38),
 
-        // Buttons
-        _buildButtonRow(['C', '+/-', '%', '÷'], Colors.grey),
-        _buildButtonRow(['7', '8', '9', '×'], Colors.grey.shade800),
-        _buildButtonRow(['4', '5', '6', '-'], Colors.grey.shade800),
-        _buildButtonRow(['1', '2', '3', '+'], Colors.grey.shade800),
+          // Display Result
+          Padding(
+            padding: const EdgeInsets.only(right: 16, bottom: 16),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                reverse: true,
+                child: Text(
+                  (result.isEmpty || result == input) ? '' : result,
+                  style: TextStyle(
+                    color: calculated ? Colors.white : Colors.white54,
+                    fontSize: 48,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
+            ),
+          ),
 
-        // Bottom row
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(35),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AdvancedCalcScreen(),
+          const Divider(color: Colors.white38),
+
+          _buildButtonRow(['C', '+/-', '%', '÷'], Colors.grey),
+          _buildButtonRow(['7', '8', '9', '×'], Colors.grey.shade800),
+          _buildButtonRow(['4', '5', '6', '-'], Colors.grey.shade800),
+          _buildButtonRow(['1', '2', '3', '+'], Colors.grey.shade800),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(35),
+                      onTap: onAdvancedPressed,
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade800,
+                          borderRadius: BorderRadius.circular(35),
                         ),
-                      );
-                    },
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade800,
-                        borderRadius: BorderRadius.circular(35),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.calculate,
-                          color: Colors.white,
-                          size: 32,
+                        child: const Center(
+                          child: Icon(
+                            Icons.calculate,
+                            color: Colors.white,
+                            size: 32,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(child: _calculatorButton('0', Colors.grey.shade800)),
-              Expanded(child: _calculatorButton('.', Colors.grey.shade800)),
-              Expanded(child: _calculatorButton('=', AppColors.googleOrange)),
-            ],
+                Expanded(child: _calculatorButton('0', Colors.grey.shade800)),
+                Expanded(child: _calculatorButton('.', Colors.grey.shade800)),
+                Expanded(child: _calculatorButton('=', AppColors.googleOrange)),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -115,18 +132,23 @@ class HomeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: buttons
-            .map(
-              (text) => Expanded(
-                child: _calculatorButton(
-                  text,
-                  text == '=' || text == '+' || text == '-' || text == '×' || text == '÷'
-                      ? AppColors.googleOrange
-                      : color,
-                ),
-              ),
-            )
-            .toList(),
+        children:
+            buttons
+                .map(
+                  (text) => Expanded(
+                    child: _calculatorButton(
+                      text,
+                      text == '=' ||
+                              text == '+' ||
+                              text == '-' ||
+                              text == '×' ||
+                              text == '÷'
+                          ? AppColors.googleOrange
+                          : color,
+                    ),
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -134,16 +156,19 @@ class HomeWidget extends StatelessWidget {
   Widget _calculatorButton(String text, Color color) {
     return Padding(
       padding: const EdgeInsets.all(6.0),
-      child: Container(
-        height: 60,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(35),
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 24, color: Colors.white),
+      child: GestureDetector(
+        onTap: () => onButtonPressed(text),
+        child: Container(
+          height: 60,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(35),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 24, color: Colors.white),
+            ),
           ),
         ),
       ),
