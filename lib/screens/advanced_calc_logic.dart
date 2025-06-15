@@ -14,6 +14,9 @@ class AdvancedCalcLogic {
       case 'AC':
         _clearAll();
         break;
+      case '⌫':
+        _deleteLast();
+        break;
       case '+/-':
         _toggleSign();
         break;
@@ -35,6 +38,9 @@ class AdvancedCalcLogic {
         break;
       case 'mr':
         _expression += memory?.toString() ?? '0';
+        break;
+      case ',':
+        _expression += ',';
         break;
       case 'x²':
         _evaluate();
@@ -69,7 +75,7 @@ class AdvancedCalcLogic {
         _evaluateFunc((x) => pow(x, 1 / 3).toDouble());
         break;
       case 'ʸ√x':
-        _expression += 'root('; // expects root(y,x)
+        _expression += 'root(';
         break;
       case 'ln':
         _evaluate();
@@ -134,6 +140,12 @@ class AdvancedCalcLogic {
     _result = '0';
   }
 
+  void _deleteLast() {
+    if (_expression.isNotEmpty) {
+      _expression = _expression.substring(0, _expression.length - 1);
+    }
+  }
+
   void _toggleSign() {
     if (_expression.startsWith('-')) {
       _expression = _expression.substring(1);
@@ -160,6 +172,15 @@ class AdvancedCalcLogic {
           .replaceAll('×', '*')
           .replaceAll('÷', '/')
           .replaceAll('E', 'e');
+
+      // Convert root(y,x) => (x)^(1/y)
+      final rootRegex = RegExp(r'root\s*\(\s*([^)]+?)\s*,\s*([^)]+?)\s*\)');
+      exp = exp.replaceAllMapped(rootRegex, (match) {
+        final y = match.group(1);
+        final x = match.group(2);
+        return '($x)^(1/($y))';
+      });
+
       Parser p = Parser();
       Expression ex = p.parse(exp);
       ContextModel cm = ContextModel();

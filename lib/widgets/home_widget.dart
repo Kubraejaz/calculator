@@ -8,6 +8,7 @@ class HomeWidget extends StatelessWidget {
   final void Function(String) onButtonPressed;
   final VoidCallback onAdvancedPressed;
   final VoidCallback onHistoryPressed;
+  final VoidCallback onNavigateToAdvancedScreen;
 
   const HomeWidget({
     super.key,
@@ -17,12 +18,13 @@ class HomeWidget extends StatelessWidget {
     required this.onButtonPressed,
     required this.onAdvancedPressed,
     required this.onHistoryPressed,
+    required this.onNavigateToAdvancedScreen,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, 
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
@@ -31,6 +33,10 @@ class HomeWidget extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.calculate_outlined, color: Colors.white),
+            onPressed: onNavigateToAdvancedScreen,
+          ),
           IconButton(
             icon: const Icon(Icons.history, color: Colors.white),
             onPressed: onHistoryPressed,
@@ -41,7 +47,6 @@ class HomeWidget extends StatelessWidget {
         children: [
           const Spacer(),
 
-          // Display Input
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Align(
@@ -61,7 +66,6 @@ class HomeWidget extends StatelessWidget {
             ),
           ),
 
-          // Display Result
           Padding(
             padding: const EdgeInsets.only(right: 16, bottom: 16),
             child: Align(
@@ -83,7 +87,7 @@ class HomeWidget extends StatelessWidget {
 
           const Divider(color: Colors.white38),
 
-          _buildButtonRow(['C', '+/-', '%', '÷'], Colors.grey),
+          _buildButtonRow(['AC', '+/-', '%', '÷'], Colors.grey),
           _buildButtonRow(['7', '8', '9', '×'], Colors.grey.shade800),
           _buildButtonRow(['4', '5', '6', '-'], Colors.grey.shade800),
           _buildButtonRow(['1', '2', '3', '+'], Colors.grey.shade800),
@@ -93,6 +97,7 @@ class HomeWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                // ⌫ Clear Step
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(6.0),
@@ -107,9 +112,9 @@ class HomeWidget extends StatelessWidget {
                         ),
                         child: const Center(
                           child: Icon(
-                            Icons.calculate,
+                            Icons.backspace,
                             color: Colors.white,
-                            size: 32,
+                            size: 28,
                           ),
                         ),
                       ),
@@ -132,23 +137,22 @@ class HomeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children:
-            buttons
-                .map(
-                  (text) => Expanded(
-                    child: _calculatorButton(
-                      text,
-                      text == '=' ||
-                              text == '+' ||
-                              text == '-' ||
-                              text == '×' ||
-                              text == '÷'
-                          ? AppColors.googleOrange
-                          : color,
-                    ),
-                  ),
-                )
-                .toList(),
+        children: buttons
+            .map(
+              (text) => Expanded(
+                child: _calculatorButton(
+                  text,
+                  text == '=' ||
+                          text == '+' ||
+                          text == '-' ||
+                          text == '×' ||
+                          text == '÷'
+                      ? AppColors.googleOrange
+                      : color,
+                ),
+              ),
+            )
+            .toList(),
       ),
     );
   }

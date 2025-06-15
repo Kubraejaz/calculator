@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onButtonPressed(String value) {
     setState(() {
-      if (value == 'C') {
+      if (value == 'AC') {
         _input = '';
         _result = '';
         _calculated = false;
@@ -47,6 +47,16 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
+  }
+
+  void _clearStep() {
+    if (_input.isNotEmpty) {
+      setState(() {
+        _input = _input.substring(0, _input.length - 1);
+        _result = '';
+        _calculated = false;
+      });
+    }
   }
 
   void _calculateResult() {
@@ -88,16 +98,17 @@ class _HomeScreenState extends State<HomeScreen> {
         result: _result,
         calculated: _calculated,
         onButtonPressed: _onButtonPressed,
-        onAdvancedPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AdvancedCalcScreen()),
-          );
-        },
+        onAdvancedPressed: _clearStep, // backspace
         onHistoryPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const HistoryScreen()),
+          );
+        },
+        onNavigateToAdvancedScreen: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AdvancedCalcScreen()),
           );
         },
       ),
