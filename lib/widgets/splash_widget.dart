@@ -13,8 +13,8 @@ class SplashWidget extends StatelessWidget {
             borderRadius: const BorderRadius.all(Radius.circular(20)),
             child: Image.asset(
               'assets/images/splash image.png',
-              width: 120,
-              height: 120,
+              width: 130,
+              height: 130,
               fit: BoxFit.cover,
             ),
           ),

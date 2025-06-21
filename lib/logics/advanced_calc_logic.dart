@@ -73,7 +73,7 @@ class AdvancedCalcLogic {
         _evaluateFunc((x) => pow(x, 1 / 3).toDouble());
         break;
       case 'ʸ√x':
-        _expression += 'root(';
+        _expression += 'root('; // user types: root(3,27)
         break;
       case 'ln':
         _evaluate();
@@ -169,20 +169,30 @@ class AdvancedCalcLogic {
 
   void _evaluate() {
     try {
+      if (_expression.contains('root(') && !_expression.contains(')')) {
+        _expression += ')';
+      }
+
       String exp = _expression
           .replaceAll('×', '*')
           .replaceAll('÷', '/')
-          .replaceAll('E', 'e');
+          .replaceAll('E', 'e')
+          .replaceAllMapped(
+            RegExp(r'root\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*\)'),
+            (match) {
+              final y = match.group(1);
+              final x = match.group(2);
+              return '(${x}^(1/($y)))';
+            },
+          );
 
-      Parser p = Parser();
-      Expression ex = p.parse(exp);
+      Parser parser = Parser();
+      Expression expression = parser.parse(exp);
       ContextModel cm = ContextModel();
-      double val = ex.evaluate(EvaluationType.REAL, cm);
+      double val = expression.evaluate(EvaluationType.REAL, cm);
 
       _result = val.toStringAsFixed(6).replaceAll(RegExp(r'\.?0+$'), '');
-
       historyController.addToHistory(_expression, _result);
-
       _expression = _result;
     } catch (_) {
       _expression = '';

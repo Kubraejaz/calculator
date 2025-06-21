@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:calculator/widgets/advanced_calc_widget.dart';
-import 'package:calculator/screens/advanced_calc_logic.dart';
+import 'package:calculator/logics/advanced_calc_logic.dart';
 
 class AdvancedCalcScreen extends StatefulWidget {
   const AdvancedCalcScreen({super.key});
