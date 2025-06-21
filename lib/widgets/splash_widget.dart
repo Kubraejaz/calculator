@@ -19,7 +19,6 @@ class SplashWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          // Title
           const Text(
             'Calculator',
             style: TextStyle(
@@ -29,13 +28,9 @@ class SplashWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          // Tagline
           const Text(
             'Smart • Clean • Fast',
-            style: TextStyle(
-              color: Colors.white70,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: Colors.white70, fontSize: 14),
           ),
         ],
       ),

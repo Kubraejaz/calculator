@@ -1,7 +1,10 @@
-import 'package:calculator/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:calculator/screens/splash_screen.dart';
+import 'package:calculator/controllers/history_controller.dart';
 
 void main() {
+  Get.put(HistoryController()); 
   runApp(const MyApp());
 }
 
@@ -10,12 +13,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      title: 'Smart Calculator',
       home: SplashScreen(),
     );
   }

@@ -12,6 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_math: ^0.3.0-nullsafety.1
   math_expressions: ^2.6.0
+  get: ^4.7.2
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:math_expressions/math_expressions.dart';
 import 'package:calculator/constants/colors.dart';
+import 'package:calculator/controllers/history_controller.dart';
 import 'package:calculator/screens/advanced_calc_screen.dart';
 import 'package:calculator/screens/history_screen.dart';
 import 'package:calculator/widgets/home_widget.dart';
-import 'package:math_expressions/math_expressions.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +18,14 @@ class _HomeScreenState extends State<HomeScreen> {
   String _input = '';
   String _result = '';
   bool _calculated = false;
+
+  late final HistoryController _historyController;
+
+  @override
+  void initState() {
+    super.initState();
+    _historyController = Get.put(HistoryController(), permanent: true);
+  }
 
   void _onButtonPressed(String value) {
     setState(() {
@@ -72,6 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
       double eval = exp.evaluate(EvaluationType.REAL, cm);
 
       _result = eval.toString();
+      _historyController.addToHistory(_input, _result);
+
       _input = _result;
     } catch (e) {
       _result = 'Error';
@@ -98,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
         result: _result,
         calculated: _calculated,
         onButtonPressed: _onButtonPressed,
-        onAdvancedPressed: _clearStep, // backspace
+        onAdvancedPressed: _clearStep,
         onHistoryPressed: () {
           Navigator.push(
             context,

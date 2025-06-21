@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:get/get.dart';
+import '../controllers/history_controller.dart';
 
 class AdvancedCalcLogic {
   String _expression = '';
@@ -7,15 +9,14 @@ class AdvancedCalcLogic {
   double? memory;
   bool _isDegree = true;
 
+  final historyController = Get.find<HistoryController>();
+
   String get displayText => _expression.isEmpty ? _result : _expression;
 
   void onButtonPressed(String input) {
     switch (input) {
       case 'AC':
         _clearAll();
-        break;
-      case '⌫':
-        _deleteLast();
         break;
       case '+/-':
         _toggleSign();
@@ -37,10 +38,7 @@ class AdvancedCalcLogic {
         memory = (memory ?? 0) - (double.tryParse(_result) ?? 0);
         break;
       case 'mr':
-        _expression += memory?.toString() ?? '0';
-        break;
-      case ',':
-        _expression += ',';
+        _expression += (memory?.toString() ?? '0');
         break;
       case 'x²':
         _evaluate();
@@ -129,6 +127,9 @@ class AdvancedCalcLogic {
       case 'Deg':
         _isDegree = !_isDegree;
         break;
+      case '⌫':
+        _removeLastStep();
+        break;
       default:
         _expression += input;
         break;
@@ -140,17 +141,17 @@ class AdvancedCalcLogic {
     _result = '0';
   }
 
-  void _deleteLast() {
-    if (_expression.isNotEmpty) {
-      _expression = _expression.substring(0, _expression.length - 1);
-    }
-  }
-
   void _toggleSign() {
     if (_expression.startsWith('-')) {
       _expression = _expression.substring(1);
     } else {
       _expression = '-$_expression';
+    }
+  }
+
+  void _removeLastStep() {
+    if (_expression.isNotEmpty) {
+      _expression = _expression.substring(0, _expression.length - 1);
     }
   }
 
@@ -173,20 +174,15 @@ class AdvancedCalcLogic {
           .replaceAll('÷', '/')
           .replaceAll('E', 'e');
 
-      // Convert root(y,x) => (x)^(1/y)
-      final rootRegex = RegExp(r'root\s*\(\s*([^)]+?)\s*,\s*([^)]+?)\s*\)');
-      exp = exp.replaceAllMapped(rootRegex, (match) {
-        final y = match.group(1);
-        final x = match.group(2);
-        return '($x)^(1/($y))';
-      });
-
       Parser p = Parser();
       Expression ex = p.parse(exp);
       ContextModel cm = ContextModel();
-
       double val = ex.evaluate(EvaluationType.REAL, cm);
+
       _result = val.toStringAsFixed(6).replaceAll(RegExp(r'\.?0+$'), '');
+
+      historyController.addToHistory(_expression, _result);
+
       _expression = _result;
     } catch (_) {
       _expression = '';

@@ -97,7 +97,6 @@ class HomeWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // ⌫ Clear Step
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(6.0),
